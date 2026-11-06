@@ -103,8 +103,7 @@ commits)
     if [ -n "$OTHERS" ]; then BODY="${BODY}"$'\n\n''**Other changes**'$'\n'"${OTHERS}"; fi
 
     CONTRIBUTORS="$(git log "$RANGE" --format='%an|%ae' --no-merges |
-        grep -viE '^(Anaaasdh|Anasdh|zpt0|zpt0\.dev|sayrox|ghost)\|' |
-        grep -vi 'claude' |
+        grep -viE '^(Anaaasdh|Anasdh|)\|' |
         grep -viE 'dependabot|\[bot\]|github-actions' |
         sort -u || true)"
 
