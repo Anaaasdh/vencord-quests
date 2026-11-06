@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-only | Copyright (c) 2026 zpt0 | Copyright (c) 2026 Anasdh -->
+
 ### Install
 
 1. Unzip the archive into `<Vencord>/src/userplugins/`; the folder has to be named `vencord-quests`

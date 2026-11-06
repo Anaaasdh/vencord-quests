@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-only | Copyright (c) 2026 zpt0 | Copyright (c) 2026 Anasdh -->
+
 ## Description
 
 <!-- Describe your changes in detail. What does this PR do and why? -->

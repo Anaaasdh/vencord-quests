@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Copyright (c) 2026 zpt0
+# Copyright (c) 2026 Anasdh
 blank_issues_enabled: false
 contact_links:
     - name: Vencord Documentation
