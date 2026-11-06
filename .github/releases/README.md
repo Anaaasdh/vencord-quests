@@ -16,7 +16,7 @@ Intro paragraph: what is the headline of this release?
 - **Feature**: what it does
 - **Fix**: what was broken
 
-**Full Changelog**: https://github.com/zpt0/Questcord/compare/v1.4.0...v1.5.0
+
 ```
 
 - the first `# ` heading becomes the **release title**
