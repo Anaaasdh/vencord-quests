@@ -10,7 +10,7 @@ VERSION="${TAG#v}"
 BASE_VERSION="${VERSION%%-*}"
 SOURCE="${NOTES_SOURCE:-auto}"
 PRERELEASE_MODE="${PRERELEASE:-auto}"
-REPOSITORY="${GITHUB_REPOSITORY:-zpt0/Questcord}"
+REPOSITORY="${GITHUB_REPOSITORY:-Anaaasdh/vencord-quests}"
 
 NOTES_DIR=".github/releases"
 INSTALL_FILE="${NOTES_DIR}/install.md"
@@ -103,7 +103,7 @@ commits)
     if [ -n "$OTHERS" ]; then BODY="${BODY}"$'\n\n''**Other changes**'$'\n'"${OTHERS}"; fi
 
     CONTRIBUTORS="$(git log "$RANGE" --format='%an|%ae' --no-merges |
-        grep -viE '^(zpt0|zpt0\.dev|sayrox|ghost)\|' |
+        grep -viE '^(Anaaasdh|Anasdh|zpt0|zpt0\.dev|sayrox|ghost)\|' |
         grep -vi 'claude' |
         grep -viE 'dependabot|\[bot\]|github-actions' |
         sort -u || true)"

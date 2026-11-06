@@ -16,10 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { LOG_PREFIX } from "../../constants";
-import { accountReady } from "../../core/account";
+import { AUTO_OFFERED_KEY, LOG_PREFIX } from "../../constants";
+import { accountReady, getOwner, loadOwned, saveOwned } from "../../core/account";
 import { debugLog } from "../../core/state";
-import { QuestsStore } from "../../core/stores";
+import { QuestsStore, listStoreQuests } from "../../core/stores";
+import { settings } from "../../settings";
 import { getQuestName, type Quest } from "../../core/types";
 import { UserStore } from "@webpack/common";
 import { suppressConsole, restoreConsole } from "../../core/utils";
@@ -32,6 +33,7 @@ import {
     onSessionEnded,
     startQuest,
 } from "../manager";
+import { cooldownRemaining, pickAutoQueue } from "./autoComplete";
 import { describeEntry, pickNext, pickToAccept, type QueueRow } from "./order";
 import {
     addToQueue,
@@ -54,9 +56,14 @@ let busy = false;
 let accepting = false;
 let hadWork = false;
 let acceptPausedUntil = 0;
+let lastEndedAt = 0;
+// quests auto-complete already put in the queue once, so removing one by hand sticks
+let offered = new Set<string>();
+let offeredOwner: string | null = null;
 const pausedIds = new Set<string>();
 let pending: ReturnType<typeof setTimeout> | undefined;
 let unsubscribers: Array<() => void> = [];
+let autoPoll: ReturnType<typeof setInterval> | undefined;
 
 export { isQueueEnabled };
 
@@ -138,6 +145,26 @@ async function acceptPending() {
     }
 }
 
+const autoCompleteOn = () => settings.store.autoCompleteAll === "allow";
+
+async function enqueueAvailable() {
+    const owner = getOwner();
+    if (!owner) return;
+    if (offeredOwner !== owner) {
+        offeredOwner = owner;
+        const saved = await loadOwned<string[]>(AUTO_OFFERED_KEY).catch(() => undefined);
+        if (getOwner() !== owner) return;
+        offered = new Set(Array.isArray(saved) ? saved : []);
+    }
+    const ids = pickAutoQueue(listStoreQuests() as Quest[], offered);
+    if (ids.length === 0) return;
+    for (const id of ids) {
+        offered.add(id);
+        addToQueue(id);
+    }
+    void saveOwned(AUTO_OFFERED_KEY, [...offered]).catch(() => {});
+}
+
 async function tick() {
     if (!active || busy || !isQueueEnabled() || !accountReady()) return;
     busy = true;
@@ -146,6 +173,8 @@ async function tick() {
         for (const row of getRows()) {
             if (row.state === "unavailable") removeFromQueue(row.entry.questId);
         }
+
+        if (autoCompleteOn()) await enqueueAvailable();
 
         // accept any pending quests first, then re-read rows to see if they became ready
         await acceptPending();
@@ -160,6 +189,13 @@ async function tick() {
                 notify("All done", "The queue is empty.", "success");
             }
             return;
+        }
+        if (autoCompleteOn()) {
+            const wait = cooldownRemaining(lastEndedAt);
+            if (wait > 0) {
+                scheduleTick(wait + 500);
+                return;
+            }
         }
         hadWork = true;
         const result = await startQuest(next.entry.questId, {
@@ -185,20 +221,28 @@ export async function startQueue() {
     active = true;
     hadWork = false;
     acceptPausedUntil = 0;
+    lastEndedAt = 0;
+    offeredOwner = null;
     await loadQueue();
     if (!active) return;
     unsubscribers = [
         subscribe(() => scheduleTick()),
         onSessionEnded((session) => {
+            lastEndedAt = Date.now();
             if (!pausedIds.has(session.id)) removeFromQueue(session.id);
             scheduleTick(SETTLE_MS);
         }),
     ];
+    // auto-complete also has to notice quests that appear without any flux event
+    autoPoll = setInterval(() => {
+        if (autoCompleteOn()) scheduleTick();
+    }, 60_000);
     scheduleTick();
 }
 
 export function stopQueue() {
     active = false;
+    clearInterval(autoPoll);
     pausedIds.clear();
     clearTimeout(pending);
     unsubscribers.forEach((u) => {

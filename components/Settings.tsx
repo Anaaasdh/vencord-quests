@@ -1,6 +1,7 @@
 /*!
  * Questcord, a Vencord plugin that automates Discord Quests
  * Copyright (c) 2026 zpt0
+ * Copyright (c) 2026 Anasdh
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,11 +22,18 @@ import { Heading } from "@components/Heading";
 import { Paragraph } from "@components/Paragraph";
 import { Switch } from "@components/Switch";
 import { classNameFactory } from "@utils/css";
-import { Select, Slider } from "@webpack/common";
+import { React, Select, Slider } from "@webpack/common";
 
 import { clearSavedQuestStates } from "../quests/manager";
+import { scheduleTick } from "../quests/queue/runner";
 import { settings } from "../settings";
 import { notify } from "../ui/notifications";
+import {
+    getDesktopPermission,
+    requestDesktopPermission,
+    sendTestNotification,
+    type DesktopPermission,
+} from "../ui/questAlerts";
 import { ColorPicker } from "./ColorPicker";
 import { QueueSettings } from "./QueueSettings";
 import { VersionDisplay } from "./VersionDisplay";
@@ -69,6 +77,11 @@ const POSITION_OPTIONS = [
 ];
 
 // values are read by the quest runner, keep in sync or heartbeats fall back
+const AUTO_COMPLETE_OPTIONS = [
+    { label: "Deny", value: "deny" },
+    { label: "Allow", value: "allow" },
+];
+
 const HEARTBEAT_OPTIONS = [
     { label: "Fast (~1s, previous behaviour)", value: "fast" },
     { label: "Balanced (~20s)", value: "balanced" },
@@ -140,11 +153,13 @@ function SettingSelect({
     label,
     note,
     options,
+    onChange,
 }: {
     settingKey: string;
     label: string;
     note?: string;
     options: Array<{ label: string; value: string }>;
+    onChange?: (value: string) => void;
 }) {
     const value = settings.use([settingKey as any])[settingKey];
     return (
@@ -153,7 +168,10 @@ function SettingSelect({
             {note && <Paragraph style={{ marginBottom: 8 }}>{note}</Paragraph>}
             <Select
                 options={options}
-                select={(v: string) => (settings.store[settingKey] = v)}
+                select={(v: string) => {
+                    settings.store[settingKey] = v;
+                    onChange?.(v);
+                }}
                 isSelected={(v: string) => v === value}
                 serialize={(v: string) => v}
             />
@@ -187,6 +205,59 @@ function SettingColor({
     );
 }
 
+const PERMISSION_LABEL: Record<DesktopPermission, string> = {
+    granted: "Allowed",
+    denied: "Blocked (change it in your system / Discord notification settings)",
+    default: "Not asked yet",
+    unsupported: "Not supported here",
+};
+
+function NewQuestAlerts() {
+    const { desktopNotifications } = settings.use(["desktopNotifications"]);
+    const [permission, setPermission] = React.useState<DesktopPermission>(getDesktopPermission());
+
+    const allow = React.useCallback(async () => {
+        setPermission(await requestDesktopPermission());
+    }, []);
+
+    return (
+        <>
+            <SettingToggle
+                settingKey="notifyNewQuests"
+                label="New quest alerts"
+                note="Get notified when a new quest becomes available"
+            />
+            <div className={cl("setting-item")}>
+                <div className={cl("toggle-row")}>
+                    <div className={cl("toggle-label")}>
+                        <Heading style={{ marginBottom: 0 }}>Desktop notifications</Heading>
+                        <Paragraph>
+                            Allow / disallow system notifications. Permission:{" "}
+                            {PERMISSION_LABEL[permission]}
+                        </Paragraph>
+                    </div>
+                    <Switch
+                        checked={!!desktopNotifications}
+                        onChange={(checked: boolean) => {
+                            settings.store.desktopNotifications = checked;
+                            if (checked) void allow();
+                        }}
+                    />
+                </div>
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+                <button
+                    className={cl("check-update-btn")}
+                    style={{ flex: 1 }}
+                    onClick={async () => setPermission(await sendTestNotification())}
+                >
+                    Send notification
+                </button>
+            </div>
+        </>
+    );
+}
+
 export function QuestSettings() {
     return (
         <div className={cl("root")}>
@@ -209,6 +280,7 @@ export function QuestSettings() {
                     markers={[1, 2, 3, 4, 6, 8, 10]}
                     unit="s"
                 />
+                <NewQuestAlerts />
             </section>
 
             <section title="Automation">
@@ -231,6 +303,13 @@ export function QuestSettings() {
                     settingKey="autoRestartStalled"
                     label="Restart when stalled"
                     note="Restart quest automation once when progress stops (off by default)"
+                />
+                <SettingSelect
+                    settingKey="autoCompleteAll"
+                    label="Auto-complete all quests"
+                    note="Allow: every available quest is completed automatically, one at a time, with a 3 minute pause between quests. Deny (default): only what you start or queue yourself"
+                    options={AUTO_COMPLETE_OPTIONS}
+                    onChange={() => scheduleTick()}
                 />
                 <SettingSelect
                     settingKey="activityHeartbeat"

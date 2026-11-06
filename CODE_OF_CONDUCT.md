@@ -43,7 +43,7 @@ an individual is officially representing the community in public spaces.
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the project maintainer at the
-[GitHub Issues](https://github.com/zpt0/Questcord/issues) page.
+[GitHub Issues](https://github.com/Anaaasdh/vencord-quests/issues) page.
 
 All complaints will be reviewed and investigated promptly and fairly.
 

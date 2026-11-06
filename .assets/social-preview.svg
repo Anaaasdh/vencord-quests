@@ -1,56 +1,28 @@
 <svg width="1280" height="640" viewBox="0 0 1280 640" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0d0d14"/>
-      <stop offset="50%" stop-color="#13131f"/>
-      <stop offset="100%" stop-color="#0d0d14"/>
+    <linearGradient id="vq" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFB400"/>
+      <stop offset="100%" stop-color="#FF3D6E"/>
     </linearGradient>
-    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#3b82f6"/>
-      <stop offset="100%" stop-color="#8b5cf6"/>
-    </linearGradient>
-    <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#3b82f6"/>
-      <stop offset="100%" stop-color="#8b5cf6"/>
-    </linearGradient>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="3" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-    <filter id="iconShadow">
-      <feDropShadow dx="0" dy="4" stdDeviation="10" flood-color="#3b82f6" flood-opacity="0.4"/>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
-
-  <!-- Background -->
-  <rect width="1280" height="640" fill="url(#bgGrad)"/>
-
-  <!-- Top line -->
-  <rect x="0" y="0" width="1280" height="3" fill="url(#g1)"/>
-
-  <!-- Logo icon (centered) -->
-  <g transform="translate(540, 140)" filter="url(#iconShadow)">
-    <rect width="200" height="200" rx="40" fill="#1a1a2e" stroke="url(#g2)" stroke-width="2.5"/>
-    <rect x="65" y="93" width="70" height="14" fill="url(#g2)"/>
-    <rect x="93" y="65" width="14" height="70" fill="url(#g2)"/>
-    <path d="M100 25 L175 100 L100 175 L25 100 Z" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="10 5" opacity="0.4"/>
+  <rect width="1280" height="640" fill="#0f0d12"/>
+  <circle cx="640" cy="250" r="260" fill="none" stroke="url(#vq)" stroke-width="2" opacity="0.18"/>
+  <circle cx="640" cy="250" r="200" fill="none" stroke="url(#vq)" stroke-width="2" opacity="0.12"/>
+  <rect x="0" y="0" width="1280" height="4" fill="url(#vq)"/>
+  <rect x="0" y="636" width="1280" height="4" fill="url(#vq)"/>
+  <g transform="translate(520,90) scale(2.0)">
+    <g filter="url(#glow)">
+      <polygon points="60,6 108,33 108,87 60,114 12,87 12,33" fill="#1a1620" stroke="url(#vq)" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M32 40 L58 86 L98 30" fill="none" stroke="url(#vq)" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M92 8 L95 17 L104 20 L95 23 L92 32 L89 23 L80 20 L89 17 Z" fill="#FFD166"/>
+    </g>
   </g>
-
-  <!-- QUESTCORD text (centered below icon) -->
-  <text x="640" y="420" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="72" font-weight="800" fill="#ffffff" text-anchor="middle" filter="url(#glow)" letter-spacing="8">QUESTCORD</text>
-
-  <!-- Tagline -->
-  <text x="640" y="465" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="22" fill="#555570" text-anchor="middle" letter-spacing="4">DISCORD QUEST AUTOMATION</text>
-
-  <!-- Divider -->
-  <rect x="440" y="500" width="400" height="2" rx="1" fill="url(#g1)" opacity="0.3"/>
-
-  <!-- URL -->
-  <text x="640" y="540" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#444460" text-anchor="middle" letter-spacing="1">github.com/zpt0/Questcord</text>
-
-  <!-- Bottom line -->
-  <rect x="0" y="637" width="1280" height="3" fill="url(#g1)"/>
+  <text x="640" y="420" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="76" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="8">VENQUESTS</text>
+  <text x="640" y="470" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="22" fill="#9a8f9e" text-anchor="middle" letter-spacing="5">DISCORD QUEST AUTOMATION</text>
+  <rect x="440" y="505" width="400" height="2" fill="url(#vq)" opacity="0.6"/>
+  <text x="640" y="548" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#7a707e" text-anchor="middle" letter-spacing="1">github.com/Anaaasdh/vencord-quests</text>
 </svg>

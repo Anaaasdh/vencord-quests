@@ -1,5 +1,5 @@
 name: Feature Request
-description: Suggest a new feature or improvement for Questcord
+description: Suggest a new feature or improvement for vencord-quests
 labels: ["enhancement"]
 body:
     - type: markdown

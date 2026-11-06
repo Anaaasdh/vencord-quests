@@ -9,7 +9,7 @@ import {
 
 describe("isSafeReleaseUrl", () => {
     it("allows http and https links", () => {
-        expect(isSafeReleaseUrl("https://github.com/zpt0/Questcord")).toBe(true);
+        expect(isSafeReleaseUrl("https://github.com/Anaaasdh/vencord-quests")).toBe(true);
         expect(isSafeReleaseUrl("http://example.com/a?b=c")).toBe(true);
     });
 

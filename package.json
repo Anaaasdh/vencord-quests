@@ -1,12 +1,12 @@
 {
-    "name": "questcord",
-    "version": "1.5.1",
+    "name": "vencord-quests",
+    "version": "1.6.0",
     "description": "A Vencord plugin that automates Discord Quests with smart real-time progress tracking",
-    "author": "zpt0.dev",
+    "author": "Anasdh",
     "license": "AGPL-3.0-only",
     "repository": {
         "type": "git",
-        "url": "https://github.com/zpt0/Questcord.git"
+        "url": "https://github.com/Anaaasdh/vencord-quests.git"
     },
     "keywords": [
         "vencord",

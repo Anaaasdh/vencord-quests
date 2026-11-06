@@ -1,35 +1,24 @@
 <svg width="1200" height="200" viewBox="0 0 1200 200" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#3b82f6"/>
-      <stop offset="100%" stop-color="#8b5cf6"/>
+    <linearGradient id="vq" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFB400"/>
+      <stop offset="100%" stop-color="#FF3D6E"/>
     </linearGradient>
-    <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#3b82f6"/>
-      <stop offset="100%" stop-color="#8b5cf6"/>
-    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
   </defs>
-
-  <!-- Background -->
-  <rect width="1200" height="200" fill="#111118"/>
-
-  <!-- Top accent line -->
-  <rect x="0" y="0" width="1200" height="3" fill="url(#g1)"/>
-
-  <!-- Logo icon (left) -->
-  <g transform="translate(80, 40)">
-    <rect width="120" height="120" rx="24" fill="#1a1a2e" stroke="url(#g2)" stroke-width="2"/>
-    <rect x="54" y="28" width="12" height="64" fill="url(#g2)"/>
-    <rect x="34" y="54" width="52" height="12" fill="url(#g2)"/>
-    <path d="M60 15 L105 60 L60 105 L15 60 Z" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="8 4" opacity="0.4"/>
+  <rect width="1200" height="200" fill="#0f0d12"/>
+  <rect x="0" y="0" width="1200" height="3" fill="url(#vq)"/>
+  <g transform="translate(80,40) scale(1.0)">
+    <g filter="url(#glow)">
+      <polygon points="60,6 108,33 108,87 60,114 12,87 12,33" fill="#1a1620" stroke="url(#vq)" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M32 40 L58 86 L98 30" fill="none" stroke="url(#vq)" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M92 8 L95 17 L104 20 L95 23 L92 32 L89 23 L80 20 L89 17 Z" fill="#FFD166"/>
+    </g>
   </g>
-
-  <!-- QUESTCORD text (right of icon) -->
-  <text x="240" y="108" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="64" font-weight="800" fill="#ffffff" letter-spacing="6">QUESTCORD</text>
-
-  <!-- Tagline -->
-  <text x="240" y="140" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#666680" letter-spacing="4">DISCORD QUEST AUTOMATION</text>
-
-  <!-- Bottom accent line -->
-  <rect x="0" y="197" width="1200" height="3" fill="url(#g1)"/>
+  <text x="240" y="108" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="64" font-weight="800" fill="#ffffff" letter-spacing="6">VENQUESTS</text>
+  <text x="240" y="140" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#9a8f9e" letter-spacing="4">DISCORD QUEST AUTOMATION</text>
+  <rect x="0" y="197" width="1200" height="3" fill="url(#vq)"/>
 </svg>

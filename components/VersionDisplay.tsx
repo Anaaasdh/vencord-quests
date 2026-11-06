@@ -21,6 +21,9 @@ import { PLUGIN_VERSION, UPDATE_CHECK_URL, GITHUB_RELEASE_URL } from "../constan
 import { compareVersions } from "../core/utils";
 import { showUpdateModal } from "./UpdateModal";
 
+const AUTHOR_NAME = "Anasdh";
+const AUTHOR_URL = "https://github.com/Anaaasdh";
+
 export function VersionDisplay() {
     const [updateStatus, setUpdateStatus] = React.useState<string | null>(null);
     const [isChecking, setIsChecking] = React.useState(false);
@@ -73,7 +76,7 @@ export function VersionDisplay() {
                 setUpdateStatus("You're up to date!");
             }
         } catch (e) {
-            console.warn("[Questcord] Update check failed:", e);
+            console.warn("[VenQuests] Update check failed:", e);
             setUpdateStatus("Check failed");
         }
 
@@ -91,7 +94,7 @@ export function VersionDisplay() {
     return (
         <div>
             <div style={{ marginBottom: "8px" }}>
-                <div style={{ fontSize: "16px", fontWeight: 600, color: "#FFFFFF" }}>Questcord</div>
+                <div style={{ fontSize: "16px", fontWeight: 600, color: "#FFFFFF" }}>VenQuests</div>
                 <div
                     style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "4px" }}
                 >
@@ -106,6 +109,35 @@ export function VersionDisplay() {
                     )}
                 </div>
             </div>
+            <a
+                href={AUTHOR_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    margin: "4px 0 12px",
+                    textDecoration: "none",
+                    color: "var(--text-muted)",
+                    fontSize: "13px",
+                }}
+            >
+                <img
+                    src={`${AUTHOR_URL}.png?size=48`}
+                    alt={AUTHOR_NAME}
+                    width={24}
+                    height={24}
+                    style={{ borderRadius: "50%" }}
+                />
+                <span>
+                    Made by{" "}
+                    <span style={{ color: "var(--brand-experiment, #5865f2)", fontWeight: 600 }}>
+                        {AUTHOR_NAME}
+                    </span>
+                </span>
+            </a>
+            <div />
             <button
                 onClick={checkForUpdates}
                 disabled={isChecking}

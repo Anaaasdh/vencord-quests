@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.0]
+
+- New: notification when new quests become available (checked whenever Discord refreshes quests, plus every 30 minutes). The first check only records existing quests, so the backlog is never announced
+- New settings: "New quest alerts" toggle, "Desktop notifications" allow/disallow switch (asks the system for permission), and a "Send notification" button to test it
+- Project renamed to vencord-quests (the plugin still shows up as "Questcord" in Vencord so existing settings keep working)
+- New: "Auto-complete all quests" setting (Allow / Deny, default Deny). When allowed, every available quest is queued and completed one at a time with a 3 minute pause between quests
+- Maintained by Anasdh
+
 ## [1.4.2]
 
 - Fix the build against Vencord 1.15.14: the deprecated `Button` and `Forms` exports were removed from `@webpack/common`

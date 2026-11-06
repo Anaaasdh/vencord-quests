@@ -16,69 +16,106 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Quest } from "../core/types";
+import { discordApiGet } from "../core/api";
+import { Quest, QUEST_TASK_TYPES, getTaskConfig } from "../core/types";
 import { completeDesktopQuest, DesktopQuestConfig } from "./desktopBase";
 
-const PLAY_CONFIG: DesktopQuestConfig = {
-    taskName: "PLAY_ON_DESKTOP",
-    questType: "Play",
-    progressKey: "PLAY_ON_DESKTOP",
-    spoofLabel: "Auto-completing:",
-    defaultQuestName: "Play Quest",
-    // minified export names change every build; keep this matcher loose
-    getStoreModule: (modules) =>
-        modules.find((x: any) => x?.exports?.Ay?.getRunningGames)?.exports?.Ay ||
-        modules.find((x: any) => x?.exports?.ZP?.getRunningGames)?.exports?.ZP,
-    spoofStore: (store, applicationId, pid) => {
-        const realGetRunningGames = store.getRunningGames;
-        const realGetGameForPID = store.getGameForPID;
+function makePlayConfig(taskName: string): DesktopQuestConfig {
+    const progressOf = (quest: any) => quest?.userStatus?.progress?.[taskName]?.value;
+    return {
+        taskName,
+        questType: "Play",
+        progressKey: taskName,
+        spoofLabel: "Auto-completing:",
+        defaultQuestName: "Play Quest",
+        // minified export names change every build; keep this matcher loose
+        getStoreModule: (modules) =>
+            modules.find((x: any) => x?.exports?.Ay?.getRunningGames)?.exports?.Ay ||
+            modules.find((x: any) => x?.exports?.ZP?.getRunningGames)?.exports?.ZP,
+        // discord matches the running process against the app's real executable
+        loadAppData: async (applicationId) => {
+            const res = await discordApiGet(
+                `/applications/public?application_ids=${applicationId}`
+            );
+            return (Array.isArray(res) ? res : res?.body)?.[0] ?? null;
+        },
+        spoofStore: (store, applicationId, pid, appName, appData) => {
+            const realGetRunningGames = store.getRunningGames;
+            const realGetGameForPID = store.getGameForPID;
 
-        const exeName = "app.exe";
-        const fakeGame = {
-            cmdLine: `C:\\Program Files\\App\\${exeName}`,
-            exeName,
-            exePath: `c:/program files/app/${exeName}`,
-            hidden: false,
-            isLauncher: false,
-            id: applicationId,
-            name: "App",
-            pid,
-            pidPath: [pid],
-            processName: "App",
-            start: Date.now(),
-        };
+            const name: string = appData?.name || appName;
+            const exeName: string =
+                appData?.executables?.find((x: any) => x.os === "win32")?.name?.replace(">", "") ||
+                `${name.toLowerCase().replace(/\s+/g, "")}.exe`;
+            const fakeGame = {
+                cmdLine: `C:\\Program Files\\${name}\\${exeName}`,
+                exeName,
+                exePath: `c:/program files/${name.toLowerCase()}/${exeName}`,
+                hidden: false,
+                isLauncher: false,
+                id: applicationId,
+                name,
+                pid,
+                pidPath: [pid],
+                processName: name,
+                start: Date.now(),
+            };
 
-        const fakeGames = [fakeGame];
-        store.getRunningGames = () => fakeGames;
-        store.getGameForPID = (checkPid: number) => fakeGames.find((x: any) => x.pid === checkPid);
+            const fakeGames = [fakeGame];
+            store.getRunningGames = () => fakeGames;
+            store.getGameForPID = (checkPid: number) =>
+                fakeGames.find((x: any) => x.pid === checkPid);
 
-        const realGames = realGetRunningGames.call(store);
-        return {
-            realFunc: { getRunningGames: realGetRunningGames, getGameForPID: realGetGameForPID },
-            fakeData: { fakeGame, fakeGames, realGames },
-        };
-    },
-    dispatchEvent: "RUNNING_GAMES_CHANGE",
-    restoreStore: (store, realFunc) => {
-        store.getRunningGames = realFunc.getRunningGames;
-        store.getGameForPID = realFunc.getGameForPID;
-    },
-    getProgressFromQuest: (quest, lastFallback) =>
-        Math.floor(
-            quest?.userStatus?.progress?.PLAY_ON_DESKTOP?.value ??
-                quest?.userStatus?.streamProgressSeconds ??
-                lastFallback
-        ),
-    getProgressFromHeartbeat: (data, lastFallback) =>
-        Math.floor(
-            data?.liveQuest?.userStatus?.progress?.PLAY_ON_DESKTOP?.value ??
-                data?.userStatus?.progress?.PLAY_ON_DESKTOP?.value ??
-                data?.progress?.PLAY_ON_DESKTOP?.value ??
-                data?.userStatus?.streamProgressSeconds ??
-                lastFallback
-        ),
-};
+            const realGames = realGetRunningGames.call(store);
+            return {
+                realFunc: {
+                    getRunningGames: realGetRunningGames,
+                    getGameForPID: realGetGameForPID,
+                },
+                fakeData: { fakeGame, fakeGames, realGames },
+            };
+        },
+        // without this event discord never notices the "game" and sends no heartbeats
+        afterSpoof: (dispatcher, { fakeGame, fakeGames, realGames }) => {
+            dispatcher.dispatch({
+                type: "RUNNING_GAMES_CHANGE",
+                removed: realGames,
+                added: [fakeGame],
+                games: fakeGames,
+            });
+        },
+        beforeRestore: (dispatcher, { fakeGame, realGames }) => {
+            dispatcher.dispatch({
+                type: "RUNNING_GAMES_CHANGE",
+                removed: [fakeGame],
+                added: [],
+                games: realGames ?? [],
+            });
+        },
+        dispatchEvent: "RUNNING_GAMES_CHANGE",
+        restoreStore: (store, realFunc) => {
+            store.getRunningGames = realFunc.getRunningGames;
+            store.getGameForPID = realFunc.getGameForPID;
+        },
+        getProgressFromQuest: (quest, lastFallback) =>
+            Math.floor(
+                progressOf(quest) ?? quest?.userStatus?.streamProgressSeconds ?? lastFallback
+            ),
+        getProgressFromHeartbeat: (data, lastFallback) =>
+            Math.floor(
+                progressOf(data?.liveQuest) ??
+                    data?.userStatus?.progress?.[taskName]?.value ??
+                    data?.progress?.[taskName]?.value ??
+                    data?.userStatus?.streamProgressSeconds ??
+                    lastFallback
+            ),
+    };
+}
 
 export async function completePlayQuest(quest: Quest, userId: string): Promise<boolean> {
-    return completeDesktopQuest(quest, userId, PLAY_CONFIG);
+    const tasks = getTaskConfig(quest)?.tasks;
+    const taskName =
+        (QUEST_TASK_TYPES.PLAY as readonly string[]).find((t) => tasks?.[t] != null) ??
+        "PLAY_ON_DESKTOP";
+    return completeDesktopQuest(quest, userId, makePlayConfig(taskName));
 }

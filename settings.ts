@@ -1,6 +1,7 @@
 /*!
  * Questcord, a Vencord plugin that automates Discord Quests
  * Copyright (c) 2026 zpt0
+ * Copyright (c) 2026 Anasdh
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,6 +32,19 @@ export const settings = definePluginSettings({
         description: "How long notifications stay on screen (seconds)",
         default: 4,
         markers: [1, 2, 3, 4, 6, 8, 10],
+        hidden: true,
+    },
+
+    notifyNewQuests: {
+        type: OptionType.BOOLEAN,
+        description: "Notify me when new quests become available",
+        default: true,
+        hidden: true,
+    },
+    desktopNotifications: {
+        type: OptionType.BOOLEAN,
+        description: "Also send system (desktop) notifications for new quests",
+        default: false,
         hidden: true,
     },
 
@@ -68,6 +82,17 @@ export const settings = definePluginSettings({
             { label: "Official pace (~60s)", value: "official" },
         ],
         default: "fast",
+        hidden: true,
+    },
+    autoCompleteAll: {
+        type: OptionType.SELECT,
+        description:
+            "Automatically complete every available quest, one at a time with a 3 minute pause between them",
+        options: [
+            { label: "Deny", value: "deny", default: true },
+            { label: "Allow", value: "allow" },
+        ],
+        default: "deny",
         hidden: true,
     },
     queueEnabled: {

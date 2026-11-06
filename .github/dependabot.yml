@@ -8,7 +8,7 @@ updates:
       labels:
           - "dependencies"
       assignees:
-          - "zpt0"
+          - "Anaaasdh"
       # Never open more than one version-update PR: every dependency of this
       # ecosystem is bundled into the single "all-dependencies" group below.
       open-pull-requests-limit: 1
@@ -38,7 +38,7 @@ updates:
       labels:
           - "dependencies"
       assignees:
-          - "zpt0"
+          - "Anaaasdh"
       # Same deal as npm: one pull request for all action bumps. The actions are
       # pinned to commit SHAs, Dependabot updates the SHA and the trailing comment.
       open-pull-requests-limit: 1

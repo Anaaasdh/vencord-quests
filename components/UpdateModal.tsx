@@ -41,7 +41,7 @@ const DISMISSED_KEY = "Questcord-dismissed-version";
 
 export function showUpdateModal(latestVersion: string, releaseNotes: string): void {
     if (!openModal) {
-        console.error("[Questcord] Missing openModal");
+        console.error("[VenQuests] Missing openModal");
         return;
     }
 
@@ -71,13 +71,13 @@ export async function navigateToUpdatesChannel(): Promise<void> {
                 return;
             }
         } catch (e) {
-            console.warn("[Questcord] Failed to resolve invite:", e);
+            console.warn("[VenQuests] Failed to resolve invite:", e);
         }
 
         try {
             openInviteModal(SUPPORT_INVITE_CODE);
         } catch (e) {
-            console.warn("[Questcord] Failed to open invite modal:", e);
+            console.warn("[VenQuests] Failed to open invite modal:", e);
             // last resort: open the invite URL directly in a new tab
             try {
                 window.open(`https://discord.gg/${SUPPORT_INVITE_CODE}`, "_blank");

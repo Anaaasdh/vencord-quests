@@ -38,11 +38,19 @@ export interface DesktopQuestConfig {
     spoofLabel: string;
     defaultQuestName: string;
     getStoreModule: (modules: any[]) => any;
+    /** Optional lookup (real exe name etc.) that runs before the store is spoofed. */
+    loadAppData?: (applicationId: string) => Promise<any>;
     spoofStore: (
         store: any,
         applicationId: string,
-        pid: number
+        pid: number,
+        appName: string,
+        appData?: any
     ) => { realFunc: any; fakeData: any };
+    /** Tell discord about the spoofed state (the game list is a flux store). */
+    afterSpoof?: (dispatcher: any, fakeData: any) => void;
+    /** Undo whatever afterSpoof announced. */
+    beforeRestore?: (dispatcher: any, fakeData: any) => void;
     dispatchEvent: string;
     restoreStore: (store: any, realFunc: any) => void;
     getProgressFromQuest: (quest: Quest, lastFallback: number) => number;
@@ -126,7 +134,26 @@ export async function completeDesktopQuest(
                     return;
                 }
 
-                const { realFunc } = config.spoofStore(storeLocal, applicationId ?? "", pid);
+                let appData: any = null;
+                if (config.loadAppData && applicationId) {
+                    try {
+                        appData = await config.loadAppData(applicationId);
+                    } catch (e) {
+                        debugLog(`${LOG_PREFIX} App data lookup failed, using fallback:`, e);
+                    }
+                }
+                const { realFunc, fakeData } = config.spoofStore(
+                    storeLocal,
+                    applicationId ?? "",
+                    pid,
+                    resolvedName,
+                    appData
+                );
+                try {
+                    config.afterSpoof?.(FluxDispatcherLocal, fakeData);
+                } catch (e) {
+                    debugLog(`${LOG_PREFIX} Spoof announce failed:`, e);
+                }
                 debugLog(
                     `${LOG_PREFIX} Spoofed ${config.questType}: ${resolvedName} (pid: ${pid}, id: ${applicationId ?? "MISSING"})`
                 );
@@ -143,6 +170,7 @@ export async function completeDesktopQuest(
                     try {
                         if (updateTicker) clearInterval(updateTicker);
                         config.restoreStore(storeLocal, realFunc);
+                        config.beforeRestore?.(FluxDispatcherLocal, fakeData);
                         if (FluxDispatcherLocal && heartbeatHandler) {
                             FluxDispatcherLocal.unsubscribe(
                                 "QUESTS_SEND_HEARTBEAT_SUCCESS",

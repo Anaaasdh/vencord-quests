@@ -2,7 +2,7 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in Questcord, please report it through [GitHub's security advisory](https://github.com/zpt0/Questcord/security/advisories/new). **Do not open a public issue for security vulnerabilities.**
+If you discover a security vulnerability in vencord-quests, please report it through [GitHub's security advisory](https://github.com/Anaaasdh/vencord-quests/security/advisories/new). **Do not open a public issue for security vulnerabilities.**
 
 We'll respond as quickly as possible and work with you to understand and address the issue.
 
@@ -13,11 +13,11 @@ This plugin operates within the Discord client via Vencord. Potential security c
 - **Authentication tokens** — the plugin accesses your Discord token for API calls. It is never sent anywhere outside of Discord's own API.
 - **API requests** — all requests go directly to Discord's REST API (`discord.com/api`) for quest completion.
 - **Data storage** — only minimal data is stored (e.g. dismissed update version, quest progress) via Vencord's DataStore.
-- **No external services** — Questcord does not connect to any third-party servers, apart from the update check below.
+- **No external services** — vencord-quests does not connect to any third-party servers, apart from the update check below.
 
 ## Update check
 
-The plugin asks the GitHub releases API for the newest version (`api.github.com/repos/zpt0/Questcord/releases`) and shows an in-app notice when a newer one exists. The request sends nothing about you and no token. Only the latest release is supported, so please update before reporting.
+The plugin asks the GitHub releases API for the newest version (`api.github.com/repos/Anaaasdh/vencord-quests/releases`) and shows an in-app notice when a newer one exists. The request sends nothing about you and no token. Only the latest release is supported, so please update before reporting.
 
 ## Best Practices
 

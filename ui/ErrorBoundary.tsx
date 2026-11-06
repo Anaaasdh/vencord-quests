@@ -35,7 +35,7 @@ export const ErrorBoundary = LazyComponent<ErrorBoundaryProps>(
             }
 
             componentDidCatch(error: unknown, info: unknown) {
-                console.error("Questcord component error:", error, info);
+                console.error("VenQuests component error:", error, info);
             }
 
             render(): React.ReactNode {

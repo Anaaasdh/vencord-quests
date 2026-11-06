@@ -273,6 +273,32 @@ export async function checkAndResumeQuests() {
         console.warn(`${LOG_PREFIX} Failed to check saved quests:`, e);
     }
 }
+// discord has used different enroll payloads per surface; some quests (videos) 404 on the first
+const ENROLL_BODIES = [
+    { location: 2 },
+    { location: 11, is_targeted: false, metadata_raw: null },
+    { location: 1, is_targeted: false, metadata_raw: null },
+];
+
+export async function enrollQuest(questId: string): Promise<void> {
+    let lastError: any;
+    for (const body of ENROLL_BODIES) {
+        try {
+            await rateLimitedPost(`/quests/${questId}/enroll`, body);
+            return;
+        } catch (e: any) {
+            lastError = e;
+            const status = e?.status ?? e?.response?.status;
+            // only payload-shaped failures are worth another variant
+            if (status !== 404 && status !== 400) throw e;
+            debugLog(
+                `${LOG_PREFIX} Enroll ${JSON.stringify(body)} failed (${status}): ${e?.message}`
+            );
+        }
+    }
+    throw lastError;
+}
+
 export type StartQuestResult = "started" | "cancelled" | "invalid" | "conflict" | "error";
 
 export async function acceptQuestById(questId: string): Promise<{
@@ -282,7 +308,7 @@ export async function acceptQuestById(questId: string): Promise<{
 }> {
     try {
         // location is a discord-defined surface id; changing it breaks enrollment
-        await rateLimitedPost(`/quests/${questId}/enroll`, { location: 2 });
+        await enrollQuest(questId);
         // store takes a moment to reflect enrollment before callers read it
         await new Promise((r) => setTimeout(r, 1500));
         // re-read from store to confirm enrollment succeeded
@@ -361,7 +387,7 @@ export async function startQuest(
             let enrollmentErrorMessage = "";
             try {
                 notify("Enrolling...", "Accepting quest automatically...", "info");
-                await rateLimitedPost(`/quests/${questId}/enroll`, { location: 2 });
+                await enrollQuest(questId);
                 await new Promise((r) => setTimeout(r, 1500));
                 const origConsole2 = suppressConsole("log", "warn");
                 try {
@@ -469,7 +495,12 @@ export async function startQuest(
 
         const localAppId = resolveApplicationId(quest);
 
-        if (!localAppId && (taskName === "PLAY_ON_DESKTOP" || taskName === "STREAM_ON_DESKTOP")) {
+        if (
+            !localAppId &&
+            (taskName === "PLAY_ON_DESKTOP" ||
+                taskName === "PLAY_ON_DESKTOP_V2" ||
+                taskName === "STREAM_ON_DESKTOP")
+        ) {
             try {
                 debugLog(
                     `${LOG_PREFIX} applicationId missing from local quest, fetching from API...`
@@ -540,6 +571,7 @@ export async function startQuest(
                 await completeVideoQuest(quest, userId);
                 break;
             case "PLAY_ON_DESKTOP":
+            case "PLAY_ON_DESKTOP_V2":
                 if (isDesktopApp) {
                     await completePlayQuest(quest, userId);
                 } else {

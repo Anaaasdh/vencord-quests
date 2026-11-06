@@ -16,9 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export const PLUGIN_VERSION = "1.5.1";
-export const LOG_PREFIX = "[Questcord]";
-export const GITHUB_REPO = "zpt0/Questcord";
+export const PLUGIN_VERSION = "1.6.0";
+export const LOG_PREFIX = "[VenQuests]";
+export const GITHUB_REPO = "Anaaasdh/vencord-quests";
 export const UPDATE_CHECK_URL = GITHUB_REPO
     ? `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`
     : "";
@@ -32,4 +32,5 @@ export const SUPPORT_INVITE_CODE = "sKTrAMctcy";
 // persisted DataStore keys; renaming orphans saved quests and queue for every user
 export const SAVED_QUESTS_KEY = "questcord-active-quests";
 export const QUEUE_KEY = "questcord-queue";
+export const AUTO_OFFERED_KEY = "questcord-auto-offered";
 export const QUEUE_ENABLED_KEY = "questcord-queue-enabled";

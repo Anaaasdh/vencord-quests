@@ -172,3 +172,23 @@ export function questsLoaded(): boolean {
         return !!QuestsStore;
     }
 }
+
+function toList(quests: any): any[] {
+    if (!quests) return [];
+    if (Array.isArray(quests)) return quests;
+    if (typeof quests.values === "function") return Array.from(quests.values());
+    if (typeof quests === "object") return Object.values(quests);
+    return [];
+}
+
+export function listStoreQuests(): any[] {
+    try {
+        // discord's store keeps quests in a Map on \`quests\`; getQuests only exists in some builds
+        const fromMethod =
+            typeof QuestsStore?.getQuests === "function" ? toList(QuestsStore.getQuests()) : [];
+        if (fromMethod.length > 0) return fromMethod;
+        return toList(QuestsStore?.quests);
+    } catch {
+        return [];
+    }
+}

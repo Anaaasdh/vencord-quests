@@ -17,17 +17,19 @@ describe("constants", () => {
     });
 
     it("has GITHUB_REPO set", () => {
-        expect(GITHUB_REPO).toBe("zpt0/Questcord");
+        expect(GITHUB_REPO).toBe("Anaaasdh/vencord-quests");
     });
 
     it("derives UPDATE_CHECK_URL from GITHUB_REPO", () => {
         expect(UPDATE_CHECK_URL).toBe(
-            "https://api.github.com/repos/zpt0/Questcord/releases/latest"
+            "https://api.github.com/repos/Anaaasdh/vencord-quests/releases/latest"
         );
     });
 
     it("derives GITHUB_RELEASE_URL from GITHUB_REPO", () => {
-        expect(GITHUB_RELEASE_URL).toBe("https://github.com/zpt0/Questcord/releases/latest");
+        expect(GITHUB_RELEASE_URL).toBe(
+            "https://github.com/Anaaasdh/vencord-quests/releases/latest"
+        );
     });
 
     it("enables update checks when GITHUB_REPO is set", () => {

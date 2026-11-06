@@ -1,9 +1,9 @@
 ### Install
 
-1. Unzip the archive into `<Vencord>/src/userplugins/`; the folder has to be named `Questcord`
+1. Unzip the archive into `<Vencord>/src/userplugins/`; the folder has to be named `vencord-quests`
 2. Rebuild Vencord, then press `Ctrl+R` in Discord
-3. Enable **Questcord** under `Settings → Vencord → Plugins`
+3. Enable **VenQuests** under `Settings → Vencord → Plugins`
 
-Updating? Replace the `Questcord` folder, rebuild and reload — your settings are kept.
+Updating? Replace the `vencord-quests` folder, rebuild and reload — your settings are kept.
 
-Checking the download (optional): `sha256sum -c SHA256SUMS` verifies the archive, and `gh attestation verify Questcord-vX.Y.Z.zip -R zpt0/Questcord` verifies that this repository's release workflow built it.
+Checking the download (optional): `sha256sum -c SHA256SUMS` verifies the archive, and `gh attestation verify vencord-quests-vX.Y.Z.zip -R Anaaasdh/vencord-quests` verifies that this repository's release workflow built it.

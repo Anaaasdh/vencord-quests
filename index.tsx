@@ -1,6 +1,7 @@
 /*!
  * Questcord, a Vencord plugin that automates Discord Quests
  * Copyright (c) 2026 zpt0
+ * Copyright (c) 2026 Anasdh
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -54,6 +55,7 @@ import { isQueueable } from "./quests/queue/order";
 import { isQueued, unloadQueue } from "./quests/queue/store";
 import { DEFAULT_STALL_TIMEOUT_MS, startStallWatchdog, stopStallWatchdog } from "./core/watchdog";
 import { settings } from "./settings";
+import { onQuestsFetched, startQuestAlerts, stopQuestAlerts } from "./ui/questAlerts";
 
 let lateResume: ReturnType<typeof setTimeout> | undefined;
 
@@ -184,12 +186,12 @@ function cleanupAll() {
 }
 
 export default definePlugin({
-    name: "Questcord",
+    name: "VenQuests",
     description: "Complete Discord quests with smart automation and real-time progress tracking",
     authors: [
         {
-            id: 299670891875270656n,
-            name: "zpt0.dev",
+            id: 618227435745312768n,
+            name: "Anasdh",
         },
     ],
     tags: ["Activity", "Utility", "Fun"],
@@ -214,6 +216,7 @@ export default definePlugin({
         },
         QUESTS_FETCH_CURRENT_QUESTS_SUCCESS() {
             markQuestsLoaded();
+            onQuestsFetched();
             void checkAndResumeQuests()
                 .catch((err) => {
                     console.warn(`${LOG_PREFIX} Resume check failed:`, err);
@@ -251,6 +254,7 @@ export default definePlugin({
                         .finally(() => scheduleTick());
                 }, 10_000);
                 setTimeout(() => checkForUpdates(), 5000);
+                startQuestAlerts();
                 startStallWatchdog(DEFAULT_STALL_TIMEOUT_MS, {
                     shouldAutoRestart: () => settings.store.autoRestartStalled === true,
                     onRestart: (questId: string) => {
@@ -278,6 +282,7 @@ export default definePlugin({
         debugLog(`${LOG_PREFIX} Plugin stopping...`);
         if (lateResume) clearTimeout(lateResume);
         stopStallWatchdog();
+        stopQuestAlerts();
         cleanupAll();
         setOwner(null);
     },

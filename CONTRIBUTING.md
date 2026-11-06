@@ -1,13 +1,13 @@
-# Contributing to Questcord
+# Contributing to vencord-quests
 
-Hey! Thanks for being interested in contributing to Questcord. Whether it's a bug fix, a new feature, or just improving documentation — every contribution matters and is genuinely appreciated.
+Hey! Thanks for being interested in contributing to vencord-quests. Whether it's a bug fix, a new feature, or just improving documentation — every contribution matters and is genuinely appreciated.
 
 ## Quick Start
 
 1. Fork and clone the repository:
    ```bash
-   git clone https://github.com/your-username/Questcord.git
-   cd Questcord
+   git clone https://github.com/your-username/vencord-quests.git
+   cd vencord-quests
    ```
 
 2. Set up the TypeScript config (gitignored because it breaks Vencord's build):
@@ -46,9 +46,9 @@ The `stubs/` directory provides type definitions for Vencord's internal APIs, so
 
 ### Testing in Discord
 
-1. Clone this repo into `path/to/Vencord/src/userplugins/Questcord`
+1. Clone this repo into `path/to/Vencord/src/userplugins/vencord-quests`
 2. Run `pnpm build` in the Vencord directory
-3. Restart Discord and enable Questcord in Settings > Vencord > Plugins
+3. Restart Discord and enable vencord-quests in Settings > Vencord > Plugins
 4. Test quest automation with active quests
 
 > **Important:** Do NOT commit `tsconfig.json` — it overrides Vencord's module resolution and breaks `pnpm build`.
@@ -70,7 +70,7 @@ The `stubs/` directory provides type definitions for Vencord's internal APIs, so
 
 ## Reporting Issues
 
-Use the [Issue Templates](https://github.com/zpt0/Questcord/issues/new/choose) when reporting bugs or requesting features.
+Use the [Issue Templates](https://github.com/Anaaasdh/vencord-quests/issues/new/choose) when reporting bugs or requesting features.
 
 ## Code of Conduct
 
@@ -78,4 +78,4 @@ This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.
 
 ---
 
-Thanks for helping make Questcord better. Seriously. ❤️
+Thanks for helping make vencord-quests better. Seriously. ❤️

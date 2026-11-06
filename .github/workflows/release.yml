@@ -73,8 +73,8 @@ jobs:
               id: build
               run: |
                   VERSION="${{ steps.tag.outputs.version }}"
-                  ZIP_NAME="Questcord-v${VERSION}"
-                  STAGING_DIR="Questcord"
+                  ZIP_NAME="vencord-quests-v${VERSION}"
+                  STAGING_DIR="vencord-quests"
 
                   mkdir -p "${STAGING_DIR}"
 

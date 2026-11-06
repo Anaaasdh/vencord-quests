@@ -79,7 +79,7 @@ export interface AppData {
 
 export const QUEST_TASK_TYPES = {
     VIDEO: ["WATCH_VIDEO", "WATCH_VIDEO_ON_MOBILE", "WATCH_VIDEO_ON_DESKTOP"] as const,
-    PLAY: ["PLAY_ON_DESKTOP"] as const,
+    PLAY: ["PLAY_ON_DESKTOP", "PLAY_ON_DESKTOP_V2"] as const,
     STREAM: ["STREAM_ON_DESKTOP"] as const,
     ACTIVITY: ["PLAY_ACTIVITY", "ACHIEVEMENT_IN_ACTIVITY"] as const,
 };
