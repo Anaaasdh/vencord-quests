@@ -93,6 +93,10 @@ declare module "@webpack/common" {
         getUsers(): Record<string, any>;
     };
 
+    const UserUtils: {
+        getUser(userId: string): Promise<any>;
+    };
+
     const SearchableSelect: React.FC<any>;
 
     const Checkbox: React.FC<any>;
@@ -142,6 +146,7 @@ declare module "@webpack/common" {
         GuildRoleStore,
         GuildChannelStore,
         UserStore,
+        UserUtils,
         SearchableSelect,
         Checkbox,
         NavigationRouter,

@@ -17,13 +17,74 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { React } from "@webpack/common";
+import { React, UserStore, UserUtils } from "@webpack/common";
 import { PLUGIN_VERSION, UPDATE_CHECK_URL, GITHUB_RELEASE_URL } from "../constants";
 import { compareVersions } from "../core/utils";
 import { showUpdateModal } from "./UpdateModal";
 
 const AUTHOR_NAME = "Anasdh";
 const AUTHOR_URL = "https://github.com/Anaaasdh";
+// discord's own CDN avatar; discord blocks images from other hosts (github.com included)
+const AUTHOR_DISCORD_ID = "618227435745312768";
+
+function AuthorAvatar() {
+    const [src, setSrc] = React.useState<string | null>(null);
+
+    React.useEffect(() => {
+        let alive = true;
+        (async () => {
+            try {
+                const user =
+                    UserStore.getUser(AUTHOR_DISCORD_ID) ??
+                    (await UserUtils.getUser(AUTHOR_DISCORD_ID));
+                const url = user?.getAvatarURL?.(undefined, 64, false);
+                if (alive && url) setSrc(url);
+            } catch {}
+        })();
+        return () => {
+            alive = false;
+        };
+    }, []);
+
+    if (src) {
+        return (
+            <img
+                src={src}
+                alt={AUTHOR_NAME}
+                width={24}
+                height={24}
+                style={{ borderRadius: "50%" }}
+                onError={() => setSrc(null)}
+            />
+        );
+    }
+    // same hexagon-V mark as the logo, so there is always something to show
+    return (
+        <svg width={24} height={24} viewBox="0 0 120 120" aria-label={AUTHOR_NAME}>
+            <defs>
+                <linearGradient id="vq-author" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#FFB400" />
+                    <stop offset="100%" stopColor="#FF3D6E" />
+                </linearGradient>
+            </defs>
+            <polygon
+                points="60,6 108,33 108,87 60,114 12,87 12,33"
+                fill="#1a1620"
+                stroke="url(#vq-author)"
+                strokeWidth="6"
+                strokeLinejoin="round"
+            />
+            <path
+                d="M32 40 L58 86 L98 30"
+                fill="none"
+                stroke="url(#vq-author)"
+                strokeWidth="14"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    );
+}
 
 export function VersionDisplay() {
     const [updateStatus, setUpdateStatus] = React.useState<string | null>(null);
@@ -48,6 +109,13 @@ export function VersionDisplay() {
             });
 
             clearTimeout(timeoutId);
+
+            // 404 from the releases API just means nothing was published yet
+            if (response.status === 404) {
+                setUpdateStatus("No releases published yet");
+                setIsChecking(false);
+                return;
+            }
 
             if (!response.ok) {
                 setUpdateStatus("Failed to check");
@@ -124,13 +192,7 @@ export function VersionDisplay() {
                     fontSize: "13px",
                 }}
             >
-                <img
-                    src={`${AUTHOR_URL}.png?size=48`}
-                    alt={AUTHOR_NAME}
-                    width={24}
-                    height={24}
-                    style={{ borderRadius: "50%" }}
-                />
+                <AuthorAvatar />
                 <span>
                     Made by{" "}
                     <span style={{ color: "var(--brand-experiment, #5865f2)", fontWeight: 600 }}>
