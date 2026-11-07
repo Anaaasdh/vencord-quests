@@ -1,6 +1,7 @@
 /*!
  * Questcord, a Vencord plugin that automates Discord Quests
- * Copyright (c) 2026 zpt0
+ 
+ 
  * Copyright (c) 2026 Anasdh
  *
  * This program is free software: you can redistribute it and/or modify
