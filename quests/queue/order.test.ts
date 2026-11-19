@@ -138,6 +138,17 @@ describe("queue/order", () => {
         expect(isQueueable(undefined)).toBe(false);
     });
 
+    it("activity quests are never queueable", () => {
+        const activity = makeQuest({
+            config: { taskConfig: { tasks: { PLAY_ACTIVITY: { target: 600 } } } },
+        });
+        expect(isQueueable(activity)).toBe(false);
+        const achievement = makeQuest({
+            config: { taskConfig: { tasks: { ACHIEVEMENT_IN_ACTIVITY: { target: 1 } } } },
+        });
+        expect(isQueueable(achievement)).toBe(false);
+    });
+
     it("kindOf maps video tasks correctly", () => {
         expect(kindOf("WATCH_VIDEO" as any)).toBe("video");
         expect(kindOf("PLAY_ON_DESKTOP" as any)).toBe("game");

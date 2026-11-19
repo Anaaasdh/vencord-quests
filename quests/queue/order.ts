@@ -19,6 +19,7 @@
 
 import {
     ALL_TASK_TYPES,
+    QUEST_TASK_TYPES,
     getQuestName,
     getTaskConfig,
     isVideoTask,
@@ -65,9 +66,15 @@ export function isExpired(quest: Quest, now = Date.now()): boolean {
     return new Date(expiresAt).getTime() <= now;
 }
 
+/** Discord activity quests are skipped everywhere (button, queue, auto-complete all). */
+export function isSkippedTask(task: TaskType | null): boolean {
+    return task != null && (QUEST_TASK_TYPES.ACTIVITY as readonly string[]).includes(task);
+}
+
 export function isQueueable(quest: Quest | undefined, now = Date.now()): boolean {
     if (!quest?.id) return false;
-    return pickTask(quest) != null && !isCompleted(quest) && !isExpired(quest, now);
+    const task = pickTask(quest);
+    return task != null && !isSkippedTask(task) && !isCompleted(quest) && !isExpired(quest, now);
 }
 
 export function describeEntry(
@@ -80,7 +87,8 @@ export function describeEntry(
     const kind = task ? kindOf(task) : null;
     let state: RowState;
     if (running) state = "running";
-    else if (!quest || !task || isCompleted(quest) || isExpired(quest, now)) state = "unavailable";
+    else if (!quest || !task || isSkippedTask(task) || isCompleted(quest) || isExpired(quest, now))
+        state = "unavailable";
     else if (!isEnrolled(quest)) state = "needs-accept";
     else state = "ready";
     return { entry, quest, task, kind, state };

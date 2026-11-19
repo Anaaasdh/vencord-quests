@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+- Fix: the Auto Complete button is mounted from the DOM when Discord changes the quest tile markup and the patches no longer match, so it keeps showing up after Discord updates
+- Discord activity quests (play an activity, in-activity achievements) are skipped everywhere: no button, never queued, ignored by "Auto-complete all quests"
+
 ## [1.6.0]
 
 - New: notification when new quests become available (checked whenever Discord refreshes quests, plus every 30 minutes). The first check only records existing quests, so the backlog is never announced

@@ -83,7 +83,7 @@ Need help building Vencord? Follow the [official guide](https://docs.vencord.dev
 | Watch a video | ✅ | Works in the desktop app, browser and mobile-only video quests |
 | Play a game on desktop | ✅ | **Requires the Discord desktop app** |
 | Stream a game | ✅ | **Requires the desktop app** and at least one other person in the voice channel |
-| Play an activity | ✅ | Pace is configurable |
+| Discord activities (play an activity, in-activity achievements) | ⏭️ | Skipped on purpose: no button, never queued, ignored by auto-complete all |
 | Console quests (Xbox / PlayStation) | ❌ | Needs real console hardware |
 | In-game achievements | ❌ | Cannot be automated |
 

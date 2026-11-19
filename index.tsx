@@ -39,6 +39,7 @@ import {
     setPluginStopping,
 } from "./core/state";
 import { cleanupAllPills, notify } from "./ui/notifications";
+import { startTileInjector, stopTileInjector } from "./ui/tileInjector";
 import { cleanupQuestVideoDismiss, setupQuestVideoAutoDismiss } from "./ui/questVideoDismiss";
 import { questPatches, renderFooter, renderQueueButton, renderQuestButton } from "./ui/patches";
 import { t } from "./ui/i18n";
@@ -180,6 +181,7 @@ function cleanupAll() {
     });
     cleanupFunctions.clear();
     cleanupQuestVideoDismiss();
+    stopTileInjector();
     cleanupAllPills();
     debugLog(`${LOG_PREFIX} Cleanup completed`);
 }
@@ -238,6 +240,7 @@ export default definePlugin({
             if (initializeStores()) {
                 setOwner(currentUserId(), { storeMayBeLoaded: true });
                 setupQuestVideoAutoDismiss();
+                startTileInjector();
                 debugLog(`${LOG_PREFIX} Ready!`);
                 void startQueue();
                 setTimeout(() => {

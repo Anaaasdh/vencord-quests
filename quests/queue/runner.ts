@@ -68,7 +68,7 @@ let autoPoll: ReturnType<typeof setInterval> | undefined;
 
 export { isQueueEnabled };
 
-function safeGetQuest(questId: string): Quest | undefined {
+export function safeGetQuest(questId: string): Quest | undefined {
     try {
         if (!QuestsStore) return undefined;
         const orig = suppressConsole("log", "warn", "error");
