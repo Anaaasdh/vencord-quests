@@ -47,7 +47,7 @@ function makePlayConfig(taskName: string): DesktopQuestConfig {
             const name: string = appData?.name || appName;
             const exeName: string =
                 appData?.executables?.find((x: any) => x.os === "win32")?.name?.replace(">", "") ||
-                `${name.toLowerCase().replace(/\s+/g, "")}.exe`;
+                name.replace(/[\\/:*?"<>|]/g, "");
             const fakeGame = {
                 cmdLine: `C:\\Program Files\\${name}\\${exeName}`,
                 exeName,

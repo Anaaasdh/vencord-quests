@@ -3,7 +3,8 @@
 ## [Unreleased]
 
 - Fix: the Auto Complete button is mounted from the DOM when Discord changes the quest tile markup and the patches no longer match, so it keeps showing up after Discord updates
-- Discord activity quests (play an activity, in-activity achievements) are skipped everywhere: no button, never queued, ignored by "Auto-complete all quests"
+- Quest execution follows the console-script concept: the game id also falls back to the task's `applications[0].id`, the fake process name uses the sanitized app name, and activity quests heartbeat every ~20s (new default) before the terminal heartbeat
+- New setting "Activity quests" (Allow / Deny, default Deny). By default Discord activity quests are skipped everywhere (no button, never queued, ignored by "Auto-complete all quests"); Allow includes them
 
 ## [1.6.0]
 

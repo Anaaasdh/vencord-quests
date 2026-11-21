@@ -51,7 +51,7 @@ import {
     startQuest,
 } from "./quests/manager";
 import { scheduleTick, startQueue, stopQueue, toggleQueued } from "./quests/queue/runner";
-import { isQueueable } from "./quests/queue/order";
+import { isQueueable, setActivityQuestsAllowed } from "./quests/queue/order";
 import { isQueued, unloadQueue } from "./quests/queue/store";
 import { DEFAULT_STALL_TIMEOUT_MS, startStallWatchdog, stopStallWatchdog } from "./core/watchdog";
 import { settings } from "./settings";
@@ -233,6 +233,7 @@ export default definePlugin({
         initDebug(settings.store);
         debugLog(`${LOG_PREFIX} Plugin started - v${PLUGIN_VERSION}`);
         setPluginStopping(false);
+        setActivityQuestsAllowed((settings.store as any).activityQuests === "allow");
         resetResume();
 
         // discord fills its quest stores lazily, so the resume check runs staged with retries

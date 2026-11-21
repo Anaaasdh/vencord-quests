@@ -26,6 +26,7 @@ import { React, Select, Slider } from "@webpack/common";
 
 import { clearSavedQuestStates } from "../quests/manager";
 import { scheduleTick } from "../quests/queue/runner";
+import { setActivityQuestsAllowed } from "../quests/queue/order";
 import { settings } from "../settings";
 import { notify } from "../ui/notifications";
 import {
@@ -310,6 +311,16 @@ export function QuestSettings() {
                     note="Allow: every available quest is completed automatically, one at a time, with a 3 minute pause between quests. Deny (default): only what you start or queue yourself"
                     options={AUTO_COMPLETE_OPTIONS}
                     onChange={() => scheduleTick()}
+                />
+                <SettingSelect
+                    settingKey="activityQuests"
+                    label="Activity quests"
+                    note="Allow: Discord activity quests are completed too (heartbeat every ~20s, then a final terminal heartbeat). Deny (default): they are skipped"
+                    options={AUTO_COMPLETE_OPTIONS}
+                    onChange={(v: string) => {
+                        setActivityQuestsAllowed(v === "allow");
+                        scheduleTick();
+                    }}
                 />
                 <SettingSelect
                     settingKey="activityHeartbeat"

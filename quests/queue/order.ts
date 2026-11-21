@@ -66,9 +66,19 @@ export function isExpired(quest: Quest, now = Date.now()): boolean {
     return new Date(expiresAt).getTime() <= now;
 }
 
-/** Discord activity quests are skipped everywhere (button, queue, auto-complete all). */
+let activityQuestsAllowed = false;
+
+/** Activity quests are skipped by default; the "Activity quests" setting turns them on. */
+export function setActivityQuestsAllowed(allowed: boolean): void {
+    activityQuestsAllowed = allowed;
+}
+
 export function isSkippedTask(task: TaskType | null): boolean {
-    return task != null && (QUEST_TASK_TYPES.ACTIVITY as readonly string[]).includes(task);
+    return (
+        !activityQuestsAllowed &&
+        task != null &&
+        (QUEST_TASK_TYPES.ACTIVITY as readonly string[]).includes(task)
+    );
 }
 
 export function isQueueable(quest: Quest | undefined, now = Date.now()): boolean {

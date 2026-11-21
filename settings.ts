@@ -73,6 +73,17 @@ export const settings = definePluginSettings({
         default: false,
         hidden: true,
     },
+    activityQuests: {
+        type: OptionType.SELECT,
+        description:
+            "Include Discord activity quests in the queue and in auto-complete (they use the activity heartbeat)",
+        options: [
+            { label: "Deny", value: "deny", default: true },
+            { label: "Allow", value: "allow" },
+        ],
+        default: "deny",
+        hidden: true,
+    },
     activityHeartbeat: {
         type: OptionType.SELECT,
         description: "How often activity quests report progress (slower is safer on rate limits)",
@@ -81,7 +92,7 @@ export const settings = definePluginSettings({
             { label: "Balanced (~20s)", value: "balanced" },
             { label: "Official pace (~60s)", value: "official" },
         ],
-        default: "fast",
+        default: "balanced",
         hidden: true,
     },
     autoCompleteAll: {

@@ -117,6 +117,10 @@ export function resolveApplicationId(quest: Quest): string | null {
         quest.application?.id ??
         quest.applicationId ??
         quest.application_id ??
+        // v2 quests list the game under the task instead of the config
+        Object.values(getTaskConfig(quest)?.tasks ?? {})
+            .map((t: any) => t?.applications?.[0]?.id)
+            .find((id) => id != null) ??
         null
     );
 }

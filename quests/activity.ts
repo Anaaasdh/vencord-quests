@@ -72,7 +72,7 @@ export async function completeActivityQuest(quest: Quest, userId: string): Promi
         const streamKey = `call:${channelId}:1`;
         const key = getProgressBarKey(quest.id, userId);
         const heartbeatMode =
-            (settings.store as { activityHeartbeat?: string }).activityHeartbeat ?? "fast";
+            (settings.store as { activityHeartbeat?: string }).activityHeartbeat ?? "balanced";
         // "official" mirrors discord's real client cadence; faster modes risk rate limits
         const [minInterval, maxInterval] =
             heartbeatMode === "official"
